@@ -1,0 +1,133 @@
+# ====================================
+# Author: Manu Singh, mnujnu@gmail.com
+# Date: 2020-02-29
+# Title: scRNA-seq data analysis for human preimplatation embryos
+# the bulk RNA-seq of human preimplantation embryonic stages are deconvoluted using the references single cellular transcriptomes and markers of Eight-cell, Morulae, Non-Committed cells, Transitory cells, Inner Cell Mass and Trophectoderm 
+# ====================================
+
+# ==============================================================================
+# SET UP THE ENVIRONMENT VARIABLES 
+# ==============================================================================
+getwd()
+Sys.Date()
+main_dir <- "~/Manu/Love/HED/Deconvolutions/E3_E5"
+date <- gsub("-", "", Sys.Date())
+
+dir.create(file.path(main_dir, date), showWarnings = FALSE)
+setwd(file.path(main_dir, date))
+
+getwd()
+set.seed(786)
+
+####################### using music
+
+sc_eset <- readRDS("sc_eset.rds")
+sc_eset
+bulk_eset <- readRDS("bulk_eset.rds")
+library(MuSiC)
+library(xbioc)
+Est.prop.GSE50244 = music_prop(bulk.eset = bulk_eset, sc.eset = sc_eset, clusters = 'cellType',
+samples = 'sampleNames', select.ct = c('Morula', 'NCC', 'pre-TE', 'ICM', 'Eight_cell', 'Transitory'), verbose = F)
+Est.prop.GSE50244 = music_prop(bulk.eset = bulk_eset, sc.eset = sc_eset, clusters = 'cellType',
+bulk_eset
+Est.prop.GSE50244 = music_prop(bulk.eset = bulk_eset, sc.eset = sc_eset, clusters = 'cellType',
+samples = 'SubjectName', select.ct = c('Morula', 'NCC', 'pre-TE', 'ICM', 'Eight_cell', 'Transitory'), verbose = F)
+head(Est.prop.GSE50244)
+names(Est.prop.GSE50244)
+dim(Est.prop.GSE50244$Est.prop.weighted)
+Est.prop.GSE50244$Est.prop.weighted
+dim(Est.prop.GSE50244$Var.prop)
+dim(Est.prop.GSE50244$r.squared.full)
+
+
+
+
+
+######### using  Another tool Bisque-RNA
+library(BisqueRNA)
+library(SingleCellExperiment)
+library(Biobase)
+CalculateSCCellProportions(sc.eset)
+res <- BisqueRNA::ReferenceBasedDecomposition(bulk_eset, sc_eset)
+res <- BisqueRNA::ReferenceBasedDecomposition(sc_eset, bulk_eset)
+dim(Est.prop.GSE50244$Var.prop)
+dim(Est.prop.GSE50244$Weight.gene)
+head(Est.prop.GSE50244$Weight.gene[1:5,1:5])
+tail(Est.prop.GSE50244$Weight.gene[1:5,1:5])
+tail(Est.prop.GSE50244$Weight.gene[10:15,1:5])
+
+#knitr::opts_chunk$set(
+#  collapse = FALSE,
+#  comment = "##",
+#  highlight = TRUE,
+#  prompt = FALSE,
+#  results = "markup"
+#)
+
+
+
+bulk <- read.delim("/Volumes/Crows/DNAse_seq/ATAC_raw/GSE101571_log2_expression.txt", header=T, sep=" ", row.names=1, dec=".")
+
+bulk <- as.matrix(bulk)
+
+bulk.eset <- Biobase::ExpressionSet(assayData = bulk)
+
+
+
+cha <- read.delim("../Ident_of cells.tsv", sep=" ", row.names=NULL)
+
+sample.ids <- cha$row.names
+
+sc.pheno <- data.frame(check.names=F, check.rows=F,
+                       stringsAsFactors=F,
+                       row.names=cha$row.names,
+                       SubjectName=gsub("_.*","",cha$row.names),
+                       cellType=cha$x)
+
+sc.meta <- data.frame(labelDescription=c("SubjectName",
+                                         "cellType"),
+                      row.names=c("SubjectName",
+                                  "cellType"))
+                                  
+sc.pdata <- new("AnnotatedDataFrame",
+                data=sc.pheno,
+                varMetadata=sc.meta)
+                
+
+dim(exprs(sc_eset))
+head(exprs(sc_eset))
+class(exprs(sc_eset))
+
+
+sc.eset <- Biobase::ExpressionSet(assayData=exprs(sc_eset),
+                                  phenoData=sc.pdata)
+
+sampleNames(bulk.eset)
+sampleNames(sc.eset)
+sc.eset$SubjectName
+sc.eset$cellType
+sampleNames(bulk.eset)
+
+bulk <- bulk[,-c(1:4)]
+
+colnames(bulk) <- c("E2","E3","E4","E5")
+
+bulk.eset <- Biobase::ExpressionSet(assayData = bulk)
+
+res <- BisqueRNA::ReferenceBasedDecomposition(bulk.eset, sc.eset, markers=NULL, use.overlap=TRUE)
+
+ref.based.estimates <- res$bulk.props
+
+knitr::kable(ref.based.estimates, digits=2)
+
+
+
+
+
+scaled.true.props <- t(scale(t(true.props)))[rownames(marker.based.estimates),]
+
+r <- cor(as.vector(marker.based.estimates),
+         as.vector(scaled.true.props))
+knitr::knit_print(sprintf("R: %f", r))
+res$sc.props
+
