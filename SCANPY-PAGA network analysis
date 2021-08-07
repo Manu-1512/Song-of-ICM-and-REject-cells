@@ -1,0 +1,41 @@
+# ====================================
+# Author: Manu Singh, mnujnu@gmail.com
+# Date: 2019-02-13
+# Title: SCANPY-PAGA analysis for human preimplatation embryonic lineages
+# To replicate the clusters obtained using Seurat, Monocle, visualized on PCA, tSNE, UMAP, and diffusion components, we used SCANPY-PAGA to visulaize the clusters in the form of networks (Suggested by Reviewer 2)
+# ====================================
+
+# ==============================================================================
+# This code and package is in Python version 3
+# ==============================================================================
+
+# -*- coding: utf-8 -*-
+"""
+Spyder Editor
+
+This is a temporary script file.
+"""
+import matplotlib.pyplot as plt
+from matplotlib import rcParams
+import numpy as np
+import pandas as pd
+import scanpy as sc
+sc.settings.set_figure_params(dpi=80)
+adata = sc.read_loom("Manu.loom")
+sc.pp.recipe_zheng17(adata)
+sc.tl.pca(adata, svd_solver='arpack')
+sc.pp.neighbors(adata, n_neighbors=4, n_pcs=15)
+sc.tl.draw_graph(adata)
+sc.pl.draw_graph(adata)
+
+sc.tl.diffmap(adata)
+sc.pp.neighbors(adata, n_neighbors=10, use_rep='X_diffmap')
+sc.tl.draw_graph(adata)
+sc.pl.draw_graph(adata)
+sc.tl.louvain(adata, resolution=1.0)
+sc.tl.paga(adata, groups='louvain')
+sc.pl.paga(adata, color=['louvain'])
+adata.obs['louvain'].cat.categories
+adata.obs['louvain_anno'] = adata.obs['louvain']
+
+exit()
