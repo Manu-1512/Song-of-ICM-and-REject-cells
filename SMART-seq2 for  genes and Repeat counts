@@ -1,0 +1,217 @@
+
+
+###### Creating TE fasta files from RepBase output
+
+awk ' \
+    BEGIN { \
+        FS = "\\[|=|\\]"; \
+        idx = 1; \
+    } \
+    { \
+        if (NR % 2) { \
+            header = $0; \
+            protein = $3; \
+        } \
+        else { \
+            sequence = $0; \
+            headers[protein] = header; \
+            sequences[protein] = sequence; \
+            proteins[idx++] = protein; \
+        } \
+    } \
+    END { \
+        n = asort(proteins); \
+        for (i = 1; i <= n; i++) { \
+            print headers[proteins[i]]"\n"sequences[proteins[i]]; \
+        } \
+    }' records.fa > sorted_records.fa
+    
+
+###### to covert them into readible format and then sort the consensus
+awk 'BEGIN{RS=">"} NR>1 {gsub("\t\t", "\t"); print ">"$0}' human_consens.fa | sed 's/\t.*//g' | sed 's/ //g' | sed '/^$/d' | awk 'BEGIN{RS=">"} {gsub("\n", "\t"); print ">"$0}'  \
+| sort -t ' ' -k2,2 \
+| awk '{sub("\t", "\n"); gsub("\t", ""); print $0}' > human_consens_sorted.fa
+
+
+######### Getting TE header using two methods, first one needed additional formating, second one worked.
+awk 'BEGIN{RS=">"} NR>1 {gsub("\t\t", "\t"); print ">"$0}' human_consens.fa | sed 's/\t.*//g' | sed 's/ //g' | sed '/^$/d' | grep '^>' | sort > TE_header.txt
+
+while read id
+do
+    grep -A1 "$id" TE_seq.fa >> TE_seq_check.fa 
+done < TE_header.txt
+
+
+
+#awk '/^>/ {printf("\n%s\n",$0);next; } { printf("%s",$0);}  END {printf("\n");}' < TE.fa
+
+
+################### The above files are used only for TE quality control from RNA-seq data, it wasn't used for the analysis. TE analysis was mainly done from bowtie2, STAR and salmon mappings.
+
+################### Here, creating the STAR indices for multiple species used in this paper 
+
+
+/usr/local/bin/STAR/
+/home/msingh/RNAseq/Monkey/Genome/Marmoset/Genome/calJac3.fa
+
+/home/msingh/RNAseq/Monkey/Genome/Marmoset/STAR_Genome_dir
+#!/bin/bash
+#$ -pe smp 4
+#$ -l mem_free=20.5G,h_vmem=24G
+#$ -e errorstar.txt
+#$ -o outstar.txt
+#$ -cwd
+
+
+
+############### Callithrix
+
+
+echo "/usr/local/bin/STAR/ --runMode genomeGenerate --genomeSAsparseD 1 --genomeSAindexNbases 14 \
+--limitGenomeGenerateRAM 20000000000 --genomeDir  \
+/home/msingh/RNAseq/Monkey/Genome/Marmoset/STAR_Genome_dir \
+--genomeFastaFiles /home/msingh/RNAseq/Monkey/Genome/Marmoset/Genome/calJac3.fa \
+--runThreadN 4 --sjdbGTFfile \
+/home/msingh/RNAseq/Monkey/Genome/Marmoset/gtf_files/callithrix_ensembl_genes.gtf \
+--sjdbOverhang 74" > Callithrix_genome_star_build
+
+
+############### Gorilla
+
+echo "/usr/local/bin/STAR/ --runMode genomeGenerate --genomeSAsparseD 1 --genomeSAindexNbases 14 \
+--limitGenomeGenerateRAM 20000000000 --genomeDir  \
+/home/msingh/RNAseq/Gorilla/STAR_Genome_dir \
+--genomeFastaFiles /home/msingh/RNAseq/Gorilla/Genome_seq/Gorillaindex.fa \
+--runThreadN 4 --sjdbGTFfile \
+/home/msingh/RNAseq/Gorilla/GTF_files/Gorilla_ensembl_genes.gtf \
+--sjdbOverhang 74" > Gorilla_genome_star_build
+
+
+
+
+############### Chimpanzee
+
+echo "/programs/STAR/STAR --runMode genomeGenerate --genomeSAsparseD 1 --genomeSAindexNbases 14 \
+--limitGenomeGenerateRAM 95000000000 --genomeDir  \
+/home/msingh/RNAseq/Chimp/STAR_Genome_dir \
+--genomeFastaFiles \
+/home/msingh/RNAseq/Chimp/Genome/CHIMPindex.fa \
+--runThreadN 4 --sjdbGTFfile \
+/home/msingh/RNAseq/Chimp/GTF/Chimp_refseq_genes.gtf \
+--sjdbOverhang 74" > Chimp_genome_star_build
+
+############### Mouse
+
+echo "/programs/STAR/STAR --runMode genomeGenerate --genomeSAsparseD 1 --genomeSAindexNbases 14 \
+--limitGenomeGenerateRAM 95000000000 --genomeDir  \
+/home/msingh/RNAseq/mouse/STAR_Genome_dir \
+--genomeFastaFiles \
+/home/msingh/for_lab/mouse_genome/bowtie2index/mm10.fa \
+--runThreadN 4 --sjdbGTFfile \
+/home/msingh/for_lab/mouse_genome/GTF/genes.gtf \
+--sjdbOverhang 74" > mouse_genome_star_build
+
+
+
+
+
+############### Human
+
+echo "/programs/STAR/STAR --runMode genomeGenerate --genomeSAsparseD 1 --genomeSAindexNbases 14 \
+--limitGenomeGenerateRAM 20000000000 --genomeDir  \
+/home/msingh/RNAseq/Homo/STAR_Genome_dir \
+--genomeFastaFiles \
+/home/msingh/RNAseq/Homo/Genome/bowtie2_index/hg19.fa \
+--runThreadN 4 --sjdbGTFfile \
+/home/msingh/RNAseq/Homo/gtf_files/genes.gtf \
+--sjdbOverhang 74" > Homo_genome_star_build
+
+
+
+
+
+
+############### Rat
+
+echo "/programs/STAR/STAR --runMode genomeGenerate --genomeSAsparseD 1 --genomeSAindexNbases 14 \
+--limitGenomeGenerateRAM 20000000000 --genomeDir  \
+/home/msingh/RNAseq/Rats/STAR_Genome_dir \
+--genomeFastaFiles \
+/home/msingh/RNAseq/Rats/Genome/index/rn6.fa \
+--runThreadN 4 --sjdbGTFfile \
+/home/msingh/RNAseq/Rats/Genome/gtf/Rat_refseq.gtf \
+--sjdbOverhang 74" > Rat_genome_star_build
+
+
+
+##### This one was by using repbases consensus
+ /programs/STAR/STAR --runMode genomeGenerate --genomeSAsparseD 1 --genomeSAindexNbases 14 \
+--limitGenomeGenerateRAM 95000000000 --genomeDir STAR_index \
+--genomeFastaFiles bowtie2_index/te19.fa \
+--runThreadN 4 --sjdbGTFfile human_consens_molly_uniq_manu.gtf \
+--sjdbOverhang 74
+
+
+######################### Running STAR for mapping SMART-seq2 
+
+/programs/STAR/STAR --genomeLoad LoadAndExit --genomeDir /workdir/Manu/Homo_Genome/STAR_Genome_dir
+for i in $(ls ./ERR*fastq.gz | \
+           sed s/_R[12]_001.fastq.gz// | \
+           sort -u); \      
+                 do /programs/STAR/STAR  \
+                    --genomeDir /workdir/Manu/Homo_Genome/STAR_Genome_dir \
+                    --readFilesCommand zcat \
+                    --readFilesIn ${i}_R1_001.fastq.gz ${i}_R2_001.fastq.gz \
+                    --runThreadN 4 --alignIntronMin 0 \
+                    --alignIntronMax 1000000 \
+                    --chimSegmentMin 15 --chimJunctionOverhangMin 15 \
+                    --outFilterScoreMinOverLread 0 --outFilterMatchNminOverLread 0  \
+                    --seedSearchStartLmax 30 --outFilterMatchNmin 50 \
+                    --clip3pNbases 2 --outFilterMultimapNmax 20 \
+                    --outFileNamePrefix "$i"_ \
+                    --outSAMtype BAM SortedByCoordinate; \
+                 done
+
+mkdir bam_files
+mv -v *bam bam_files/
+
+cd bam_files/
+
+
+##### Calculating TE family level counts
+
+for i in $(ls ./*_Aligned.sortedByCoord.out.bam | \
+            sed s/_Aligned.sortedByCoord.out.bam// | \
+            sort -u); 
+                    do featureCounts \
+                         -T 2 -t exon \
+                         -g gene_id -a \
+                         /workdir/Manu/Homo_Genome/gtf_files/Human_class2_TE.gtf \
+                         -o "$i"_rmsk.tsv \
+                         ${i}_Aligned.sortedByCoord.out.bam; \
+                    done
+
+##### Calculating TE locus level counts
+
+for i in $(ls ./*_Aligned.sortedByCoord.out.bam | \
+            sed s/_Aligned.sortedByCoord.out.bam// | \
+            sort -u); 
+                    do featureCounts \
+                         -T 2 -t exon \
+                         -g gene_id -a -f \
+                         /workdir/Manu/Homo_Genome/gtf_files/Human_class2_TE.gtf \
+                         -o "$i"_rmsk_loci.tsv \
+                         ${i}_Aligned.sortedByCoord.out.bam; \
+                    done
+                    
+##### Calculating gene level counts                    
+for i in $(ls ./*_Aligned.sortedByCoord.out.bam | \
+            sed s/_Aligned.sortedByCoord.out.bam// | \
+            sort -u); 
+                    do featureCounts \
+                         -T 2 -t exon \
+                         -g gene_id -a \
+                         /workdir/Manu/Homo_Genome/gtf_files/genes.gtf \
+                         -o "$i"_genes.tsv \
+                         ${i}_Aligned.sortedByCoord.out.bam; \
+                    done
