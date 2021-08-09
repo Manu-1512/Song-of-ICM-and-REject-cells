@@ -1,0 +1,22 @@
+
+export PATH=/programs/salmon-1.2.1/bin:$PATH
+
+
+for i in $(ls ./ERR*fastq.gz | \
+               sed s/.fastq.gz// | \
+               sort -u); \
+                         do 
+                             salmon quant -i \
+                             /workdir/Manu/Homo_Genome/Genome/bed_files/Alevin/Genes_TEindex \
+                             -l A -r ${i}.fastq.gz \
+                             -p 8 --validateMappings \
+                             -o quants/${i}_quant; \
+                        done
+
+mkdir salmon
+for i in quants/*/quant.sf; do  mv "$i" "salmon/$(basename -- "$(dirname -- "$i")").tsv"; done
+cd salmon/
+
+for file in *.tsv; do mv $file `echo $file | sed 's/_quant//'`;done
+
+R
