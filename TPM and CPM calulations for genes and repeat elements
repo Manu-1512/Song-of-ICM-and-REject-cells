@@ -1,0 +1,120 @@
+
+
+######################################################################### genes expression from featureCounts output
+######################################################################### (transcripts per million), at gene level
+mkdir genes
+
+mv -v *genes.tsv genes/
+
+cd genes/
+
+R
+
+
+file_names <- dir() #where you have your files
+data_frame <- do.call(cbind,lapply(file_names,read.delim, header=FALSE))
+man <- cbind(data_frame[,1:2],data_frame[, c(rep(FALSE,2), TRUE)])
+
+
+check <- apply(man[,2:ncol(man)]/man[,1], 2, sum)
+vec <- as.vector(check)
+vec <- as.numeric(vec)
+head(man)
+man[,2:ncol(man)] <- man[,2:ncol(man)]*1000000/man[,1]
+man[,2:ncol(man)] <- sweep(man[,2:ncol(man)], 2, vec, '/')
+head(man)
+row.names(man) <- man[,1]
+man <- man[,-c(1:2)]
+
+
+
+######################################################################### repeat elements expression from featureCounts output
+######################################################################### (counts per million), both locus and family level
+
+mkdir rmsk rmsk_loci
+
+mv -v *rmsk.ts* rmsk/
+
+mv -v *rmsk_lo* rmsk_loci/
+
+cd rmsk_loci/
+
+mkdir counts summary
+
+mv -v *tsv counts/
+
+mv -v *summary summary/
+
+cd summary/
+
+
+echo *.summary | xargs -n 1 awk '(NR==2 || NR==13){sum+=$2} END {print FILENAME, sum }' > uniquely_mapped_reads.tsv
+
+cd ../counts
+
+R
+file_names <- dir() #where you have your files
+
+data_frame <- do.call(cbind,lapply(file_names,read.delim, header=FALSE))
+
+data_frame <- data_frame[-c(1:2),]
+
+rownames(data_frame) <- (paste0(data_frame[,2],":",data_frame[,3],"-",data_frame[,4],"_", data_frame[,1],"_",data_frame[,5]))
+
+dat <- cbind(data_frame[,6],data_frame[, c(rep(FALSE,6), TRUE)])
+
+names(dat) <- c("length",file_names)
+
+
+colnames(dat) <- sub("_Aligned.sortedByCoord.out.bam_rmsk_loci.tsv", "", names(dat))
+
+map_reads <- read.delim("../summary/uniquely_mapped_reads.tsv", header=F, sep=" ")
+
+map_reads[,1] <- sub("_Aligned.sortedByCoord.out.bam_rmsk_loci.tsv.summary", "", map_reads[,1]) 
+
+indx <- sapply(dat, is.factor)
+
+dat[indx] <- lapply(dat[indx], function(x) as.numeric(as.character(x)))
+
+#indx <- sapply(dat, is.character)
+
+#dat[indx] <- lapply(dat[indx], function(x) as.numeric(as.character(x)))
+
+dat[,2:ncol(dat)] <- dat[,2:ncol(dat)]*1000/dat[,1]
+head(dat)
+dat <- dat[,-1]
+
+
+row.names(map_reads) <- map_reads[,1]
+vec <- as.vector(map_reads[,2])
+vec <- as.numeric(vec)
+rmsk.locus.dat <- sweep(dat, 2, vec, '/')
+rmsk.locus.dat <- dat*1000000
+
+####################
+
+######################### TE family level Counts per Million
+cd ../../rmsk 
+R
+
+file_names <- dir() #where you have your files
+data_frame <- do.call(cbind,lapply(file_names,read.delim, header=T, row.names=1, comment.char = "#"))
+dat <- cbind(data_frame[,1],data_frame[, c(FALSE, TRUE)])
+dat <- dat[,-1]
+map_reads <- read.delim("../../summary/rmsk_mapped_reads.tsv", header=F, sep=" ")
+map_reads[,1] <- sub("_rmsk_re.tsv.summary", "", map_reads[,1]) 
+colnames(dat) <- map_reads[,1]
+head(dat)
+indx <- sapply(dat, is.factor)
+dat[indx] <- lapply(dat[indx], function(x) as.numeric(as.character(x)))
+head(dat)
+row.names(map_reads) <- map_reads[,1]
+vec <- as.vector(map_reads[,2])
+vec <- as.numeric(vec)
+dat <- sweep(dat, 2, vec, '/')
+dat <- dat*1000000
+head(dat)
+dat <- log2(dat+1)
+
+
+##############################
