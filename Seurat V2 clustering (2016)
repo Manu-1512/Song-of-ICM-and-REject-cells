@@ -1,0 +1,64 @@
+counts <- read.delim("../Petropolous_scRNAseq_expression.txt", row.names=1)
+
+filter <- apply(counts, 1, function(x) length(x[x>10])>=1)
+counts <- counts[filter,]
+dim(counts)
+counts.e <- rbind(counts,colSums(counts > 10))
+rownames(counts.e)[18342] <- "number_genes"
+counts.ex <- counts.e[,apply(counts.e[26179,], 2, function(col) {any(col>6000)})]
+counts.ex <- counts.ex[,apply(counts.ex[26179,], 2, function(col) {any(col<9000)})]
+write.table(counts.ex, "expressed_genes.tsv", row.names=TRUE, col.names=NA, sep="\t", quote=FALSE)
+counts <- counts.ex[-26179,]
+
+########### bringing the expression data now, that we had calculated the gene expression in
+############ names as "man"
+
+library(Seurat)
+manu=new("seurat",raw.data=man)
+manu=setup(manu,project="manu",min.cells = 10,names.field = 1,names.delim = "_",min.genes = 5000,is.expr=2,) 
+
+manu=mean.var.plot(manu,y.cutoff = 2,x.low.cutoff = 2,fxn.x = expMean,fxn.y = logVarDivMean)
+dev.off()
+
+manu.sig.genes=pca.sig.genes(manu,1:9,pval.cut = 1e-5,max.per.pc = 200)
+length(manu.sig.genes)
+manu=pca(manu,pc.genes=manu.sig.genes,do.print = FALSE)
+
+png("significant_PCA_lower.png",  width = 28.8, height = 18.2, units = "cm", res = 600, pointsize = 12)
+pca.plot(manu,1,2,pt.size = 2)
+dev.off()
+
+manu=jackStraw(manu,num.replicate = 200,do.print = FALSE) 
+
+
+png("significant_components.png",  width = 18.8, height = 18.2, units = "cm", res = 600, pointsize = 12)
+jackStrawPlot(manu,PCs = 1:12)
+dev.off()
+manu=project.pca(manu,do.print=FALSE)
+
+png("totipotent_pluripotent_genes7.png",  width = 28.8, height = 18.2, units = "cm", res = 600, pointsize = 12)
+pcHeatmap(manu,pc.use = 1,use.full = TRUE,do.balanced = TRUE,remove.key = TRUE)
+dev.off()
+
+manu=run_tsne(manu,dims.use = 1:11,max_iter=2000)
+
+manu=buildClusterTree(manu,do.reorder = TRUE,reorder.numeric = TRUE,pcs.use = 1:11)
+manu=DBclust_dimension(manu,1,2,reduction.use = "tsne",G.use = 7,set.ident = TRUE)
+dev.off()
+
+png("Raw_PCA.png",  width = 14.8, height = 12.2, units = "cm", res = 600, pointsize = 12)
+pca.plot(manu,1,2,pt.size = 5, col=c("hotpink4","red3","goldenrod3","midnightblue","royalblue","lightslateblue","darkgray","black"))
+
+
+png("tSNE_final_10_clust.png",  width = 14.8, height = 12.2, units = "cm", res = 600, pointsize = 12)
+tsne.plot(manu,pt.size = 5, col=my_tsne_cols[1:10])
+dev.off()
+
+
+install.packages("viridis")
+library(viridis)
+col=inferno(256)
+
+png("FeaturePlot_markers_E34567.png",  width = 12.8, height = 28.2, units = "cm", res = 600, pointsize = 12)
+feature.plot(manu, c("LEUTX","DUXA","NANOG","BMP2","DLX3","CYP19A1"),pt.size = 0.51, col=rev(col) )
+dev.off()
