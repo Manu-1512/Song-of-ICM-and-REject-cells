@@ -1,0 +1,88 @@
+
+
+for i in $(ls ./ERR*  | \
+          sed s/.fastq.gz// | \
+          sort -u); do 
+                       /programs/STAR/STAR --genomeDir \
+                       /workdir/Manu/Homo_Genome/STAR_Genome_dir \
+                       --readFilesCommand zcat \
+                       --readFilesIn ${i}.fastq.gz \
+                       --runThreadN 4 \
+                       --alignIntronMin 20 --alignIntronMax 1000000 \
+                       --chimSegmentMin 15 --chimJunctionOverhangMin 15 \
+                       --outFilterMultimapNmax 20 \
+                       --outFileNamePrefix "$i"_ \
+                       --outSAMtype BAM SortedByCoordinate \
+                       --outReadsUnmapped Fastx; \
+                   done
+
+
+for old in *bam; do new=$(echo $old | sed 's/_Aligned.sortedByCoord.out//g'); mv "$old" "$new"; done
+mkdir bam_files
+mv -v *bam bam_files/
+cd bam_files/
+
+export LC_ALL=en_US.utf-8
+export LANG=en_US.utf-8
+
+velocyto run-smartseq2 -d 1 *.bam /workdir/Manu/Homo_Genome/gtf_files/genes.gtf
+
+cd velocyto/
+
+R
+library(Seurat)
+library(devtools)
+install_github("velocyto-team/velocyto.R")
+library(velocyto.R)
+
+remotes::install_github('satijalab/seurat-wrappers')
+library(SeuratWrappers)
+
+dir.create("Analysis")
+setwd("Analysis/")
+getwd()
+list.files("../")
+
+lldat <- ReadVelocity(file = "../onefilepercell_ERR1041614_and_others_UF8CP.loom")
+bm <- as.Seurat(x = lldat)
+bm <- SCTransform(object = bm, assay = "spliced")
+bm <- RunPCA(object = bm, verbose = FALSE)
+bm <- FindNeighbors(object = bm, dims = 1:3, reduction= "pca", k.param = 30, nn.method= "rann", prune.SNN= 1/25, force.recalc=TRUE)
+bm <- FindClusters(object = bm, resolution=0.4)
+bm <- RunUMAP(object = bm, dims = 1:3)
+bm <- RunVelocity(object = bm, deltaT = 1, kCells = 25, fit.quantile = 0.02)
+ident.colors <- (scales::hue_pal())(n = length(x = levels(x = bm)))
+names(x = ident.colors) <- levels(x = bm)
+cell.colors <- ident.colors[Idents(object = bm)]
+names(x = cell.colors) <- colnames(x = bm)
+  
+  
+  png("FeaturePlots_markers_E5.png",  width = 24.7, height = 32.8, units = "cm", res = 600, pointsize = 12)
+FeaturePlot(bm, c("BIK","HKDC1", "IL6R",  "NANOG", "GATA2", "GATA3"), cols=c("purple","gold"), max.cutoff=5, min.cutoff=1, pt.size=2, reduction="pca")
+dev.off()
+
+
+jj <- WhichCells(bm, ident=0)
+
+bm_filt <- bm[,!colnames(bm) %in% jj]
+
+ident.colors <- (scales::hue_pal())(n = length(x = levels(x = bm_filt)))
+names(x = ident.colors) <- levels(x = bm_filt)
+cell.colors <- ident.colors[Idents(object = bm_filt)]
+names(x = cell.colors) <- colnames(x = bm_filt)
+head(ident.colors)
+bm_filt <- RunVelocity(object = bm_filt, deltaT = 1, kCells = 15, fit.quantile = 0.1)
+
+
+ ident.colors <- (scales::hue_pal())(n = length(x = levels(x = bm_filt)))
+names(x = ident.colors) <- levels(x = bm_filt)
+cell.colors <- ident.colors[Idents(object = bm_filt)]
+names(x = cell.colors) <- colnames(x = bm_filt)
+bm_filt
+
+ png("Three_clust_Velocity_E5_cells_filtered.png",  width = 12.7, height = 14.8, units = "cm", res = 600, pointsize = 12)
+show.velocity.on.embedding.cor(emb = Embeddings(object = bm_filt, reduction = "pca"), vel = Tool(object = bm_filt, 
+    slot = "RunVelocity"), n = 200, scale = "sqrt", cell.colors = ac(x = cell.colors, alpha = 0.5), 
+    cex = 0.8, arrow.scale = 12, show.grid.flow = TRUE, min.grid.cell.mass = 0.5, grid.n = 40, arrow.lwd = 1.5, 
+    do.par = FALSE, cell.border.alpha = 0.5)
+    dev.off()
