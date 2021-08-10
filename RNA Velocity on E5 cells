@@ -1,3 +1,11 @@
+# RNA Velocity analysis of E5 embryos
+# This is similar to the previous code, except only E5 is analyzed instead of E4-E5 taken together
+# Author Manu Singh
+# Date : 20190817
+# Max-Delbrueck Centre for Molecular Medicine, Berlin
+# Cornell University, Ithaca, USA
+# Email: ms3559@cornell.edu
+# Twitter: @manvendr7
 
 
 for i in $(ls ./ERR*  | \
