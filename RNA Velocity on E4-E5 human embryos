@@ -1,0 +1,164 @@
+
+for i in $(ls ./ERR*  | \
+          sed s/.fastq.gz// | \
+          sort -u); do 
+                       /programs/STAR/STAR --genomeDir \
+                       /workdir/Manu/Homo_Genome/STAR_Genome_dir \
+                       --readFilesCommand zcat \
+                       --readFilesIn ${i}.fastq.gz \
+                       --runThreadN 4 \
+                       --alignIntronMin 20 --alignIntronMax 1000000 \
+                       --chimSegmentMin 15 --chimJunctionOverhangMin 15 \
+                       --outFilterMultimapNmax 20 \
+                       --outFileNamePrefix "$i"_ \
+                       --outSAMtype BAM SortedByCoordinate \
+                       --outReadsUnmapped Fastx; \
+                   done
+
+
+for old in *bam; do new=$(echo $old | sed 's/_Aligned.sortedByCoord.out//g'); mv "$old" "$new"; done
+mkdir bam_files
+mv -v *bam bam_files/
+cd bam_files/
+
+export LC_ALL=en_US.utf-8
+export LANG=en_US.utf-8
+
+velocyto run-smartseq2 -d 1 *.bam /workdir/Manu/Homo_Genome/gtf_files/genes.gtf
+
+cd velocyto/
+
+R
+library(Seurat)
+library(devtools)
+install_github("velocyto-team/velocyto.R")
+library(velocyto.R)
+
+remotes::install_github('satijalab/seurat-wrappers')
+library(SeuratWrappers)
+
+dir.create("Analysis")
+setwd("Analysis/")
+getwd()
+list.files("../")
+
+ldat <- ReadVelocity(file = "../onefilepercell_E4_ERR1041424_and_others_B9YWL.loom")
+bm <- as.Seurat(x = ldat)
+bm <- SCTransform(object = bm, assay = "spliced")
+bm <- RunPCA(object = bm, verbose = FALSE)
+bm <- FindNeighbors(object = bm, dims = 1:5, reduction= "pca", k.param = 30, nn.method= "annoy", prune.SNN= 1/25, force.recalc=TRUE)
+bm <- FindClusters(object = bm, resolution=0.5)
+bm <- RunUMAP(object = bm, dims = 1:3)
+ bm <- FindClusters(object = bm, resolution=0.8) ### just increasing the resolution to check if there are more resolvable clusters
+  pbmc.markers <- FindAllMarkers(bm, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+############### Now Running the Velocity
+bm <- RunVelocity(object = bm, deltaT = 1, kCells = 25, fit.quantile = 0.02)
+ident.colors <- (scales::hue_pal())(n = length(x = levels(x = bm)))
+names(x = ident.colors) <- levels(x = bm)
+cell.colors <- ident.colors[Idents(object = bm)]
+names(x = cell.colors) <- colnames(x = bm)
+
+########## Saving the first plot
+
+png("Velocity_E4_E5_cells_V4_shot.png",  width = 12.7, height = 14.8, units = "cm", res = 600, pointsize = 12)
+show.velocity.on.embedding.cor(emb = Embeddings(object = bm, reduction = "pca"), vel = Tool(object = bm, 
+    slot = "RunVelocity"), n = 200, scale = "sqrt", cell.colors = ac(x = cell.colors, alpha = 0.5), 
+    cex = 0.8, arrow.scale = 15, show.grid.flow = TRUE, min.grid.cell.mass = 0.5, grid.n = 40, arrow.lwd = 2, 
+    do.par = FALSE, cell.border.alpha = 0.5)
+    dev.off()
+    
+####### Cells from Cluster 0 (N~15) did seem noisy  and scattered on the biplots
+
+jj <- WhichCells(bm, ident=0)
+
+####### let's filter out and see how the plot looks
+
+bm_filt <- bm[,!colnames(bm) %in% jj]
+#Assigning Embryonic days from the original annotations
+
+###### Now re-annotate them based on the clusters we previously had found
+  
+  jk <- read.delim("/local/workdir/Manu/Data/scRNA_seq/HED/E4_E5/E5/bam_files/velocyto/Analysis/Previous_clusters_metadata.tasv", sep=" ")
+  
+  bm_filt <- bm[,colnames(bm) %in% jk[,1]]
+
+######### we do not need this but just to be sure that cells are in same order
+jk <- jk[order(jk[,1]),]
+bm_filt <- bm[,order(colnames(bm))]
+
+bm_filt$previous_clust <- jk[,2]
+
+################# 
+
+bm_filt$E_days <- gsub("_.*", "", gsub("\\.bam","",gsub(".*:","",colnames(bm_filt))))
+
+
+bm_filt <- RunPCA(object = bm_filt, verbose = FALSE)
+bm_filt <- FindNeighbors(object = bm_filt, dims = 1:6, force.recalc=TRUE)
+bm_filt <- FindClusters(object = bm_filt, resolution=0.6)
+bm_filt <- RunUMAP(object = bm_filt, dims = 1:6)
+bm_filt.markers <- FindAllMarkers(bm_filt, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+bm_filt.markers[grep("NANOG", bm_filt.markers$gene),]
+bm_filt.markers[grep("BIK", bm_filt.markers$gene),]
+bm_filt.markers[grep("HKDC1", bm_filt.markers$gene),]
+
+
+bm_filt <- RunVelocity(object = bm_filt, deltaT = 1, kCells = 25, fit.quantile = 0.02)
+ident.colors <- (scales::hue_pal())(n = length(x = levels(x = bm_filt)))
+names(x = ident.colors) <- levels(x = bm_filt)
+cell.colors <- ident.colors[Idents(object = bm_filt)]
+names(x = cell.colors) <- colnames(x = bm_filt)
+
+
+png("Velocity_E4_E5_filtered_cells_5_clust.png",  width = 12.7, height = 14.8, units = "cm", res = 600, pointsize = 12)
+show.velocity.on.embedding.cor(emb = Embeddings(object = bm_filt, reduction = "pca"), vel = Tool(object = bm_filt, 
+    slot = "RunVelocity"), n = 200, scale = "sqrt", cell.colors = ac(x = cell.colors, alpha = 0.5), 
+    cex = 0.8, arrow.scale = 15, show.grid.flow = TRUE, min.grid.cell.mass = 0.5, grid.n = 40, arrow.lwd = 2, 
+    do.par = FALSE, cell.border.alpha = 0.5)
+    dev.off()
+
+png("Velocity_E4_E5_filtered_cells_7_clust_on_UMAP.png",  width = 12.7, height = 14.8, units = "cm", res = 600, pointsize = 12)
+show.velocity.on.embedding.cor(emb = Embeddings(object = bm_filt, reduction = "umap"), vel = Tool(object = bm_filt, 
+    slot = "RunVelocity"), n = 200, scale = "sqrt", cell.colors = ac(x = cell.colors, alpha = 0.5), 
+    cex = 1, arrow.scale = 1, show.grid.flow = TRUE, min.grid.cell.mass = 0.5, grid.n = 40, arrow.lwd = 1, 
+    do.par = FALSE, cell.border.alpha = 0.5)
+    dev.off()
+    
+ Idents(bm_filt) <- bm_filt$previous_clust
+ levels(bm_filt)
+ident.colors <- (scales::hue_pal())(n = length(x = levels(x = bm_filt)))
+names(x = ident.colors) <- levels(x = bm_filt)
+cell.colors <- ident.colors[Idents(object = bm_filt)]
+names(x = cell.colors) <- colnames(x = bm_filt)
+
+
+png("Velocity_E4_E5_filtered_cells_celltypes_on_UMAP.png",  width = 12.7, height = 14.8, units = "cm", res = 600, pointsize = 12)
+show.velocity.on.embedding.cor(emb = Embeddings(object = bm_filt, reduction = "umap"), vel = Tool(object = bm_filt, 
+    slot = "RunVelocity"), n = 200, scale = "sqrt", cell.colors = ac(x = cell.colors, alpha = 0.5), 
+    cex = 1.3, arrow.scale = 1.3, show.grid.flow = TRUE, min.grid.cell.mass = 0.5, grid.n = 40, arrow.lwd = 1, 
+    do.par = FALSE, cell.border.alpha = 0.5)
+    dev.off()
+    
+  markers_cells <- FindAllMarkers(bm_filt, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+bm_filt@misc$markers_cell <- markers_cells
+
+Idents(bm_filt) <- bm_filt$E_days
+ident.colors <- (scales::hue_pal())(n = length(x = levels(x = bm_filt)))
+names(x = ident.colors) <- levels(x = bm_filt)
+cell.colors <- ident.colors[Idents(object = bm_filt)]
+names(x = cell.colors) <- colnames(x = bm_filt)
+  png("Velocity_E4_E5_filtered_cells_E_days_on_UMAP.png",  width = 12.7, height = 14.8, units = "cm", res = 600, pointsize = 12)
+show.velocity.on.embedding.cor(emb = Embeddings(object = bm_filt, reduction = "umap"), vel = Tool(object = bm_filt, 
+    slot = "RunVelocity"), n = 200, scale = "sqrt", cell.colors = ac(x = cell.colors, alpha = 0.5), 
+    cex = 1.3, arrow.scale = 1.3, show.grid.flow = TRUE, min.grid.cell.mass = 0.5, grid.n = 40, arrow.lwd = 1, 
+    do.par = FALSE, cell.border.alpha = 0.5)
+    dev.off()
+    
+    
+  ##################### Since the cells matched the previous clusters, we also did annotate it based on the obtained clusters from current analysis
+  new.cluster.ids <- c("M2_Morula",  "ICM",  "NCC", "TE", "TE", "M1_Morula", "M2_Morula")
+names(new.cluster.ids) <- levels(bm_filt)
+bm_filt <- RenameIdents(bm_filt, new.cluster.ids)
+    
+saveRDS("E4_E4_celltypes_Velocity.rds")
+savehistory("E4_E4_celltypes_Velocity.Rhistory")
