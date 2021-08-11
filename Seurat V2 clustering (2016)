@@ -1,3 +1,5 @@
+
+
 counts <- read.delim("../Petropolous_scRNAseq_expression.txt", row.names=1)
 
 filter <- apply(counts, 1, function(x) length(x[x>10])>=1)
@@ -62,3 +64,15 @@ col=inferno(256)
 png("FeaturePlot_markers_E34567.png",  width = 12.8, height = 28.2, units = "cm", res = 600, pointsize = 12)
 feature.plot(manu, c("LEUTX","DUXA","NANOG","BMP2","DLX3","CYP19A1"),pt.size = 0.51, col=rev(col) )
 dev.off()
+
+markers10clust.all=find_all_markers(manu,thresh.test = 2,test.use = "roc", do.print = TRUE)
+
+markers_Mor_icm_epi_pe_all.use=subset(markers_10_population.all, (avg_diff > 1 & cluster==4) |  (avg_diff > 1 & cluster==5) |
+  (avg_diff > 1 & cluster==6) |  (avg_diff > 1 & cluster==7))$gene
+###################
+########
+
+png("heatmap_Markers_Morula_ICM_EPI_PE.png",  width = 16.8, height = 16.8, units = "cm", res = 600, pointsize = 12)
+doHeatMap(nbt,genes.use = markers_Mor_icm_epi_pe_all.use,slim.col.label = TRUE, cells.use = which.cells(nbt,c(4,5,6,7)), remove.key = FALSE,cexRow=0.05, col.use=myheatcol)
+dev.off()
+
