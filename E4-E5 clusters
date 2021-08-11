@@ -1,0 +1,6 @@
+library(DataCombine)
+Replaces <- data.frame(from = c(0,1,2,3,4,5), to = c('Morula', 'NCC', 'pre-TE', 'ICM', 'Eight_cell', 'Transitory'))
+Replaces
+e3_5_mark <- FindReplace(data = pbmc.markers, Var = "cluster", replaceData = Replaces,
+                     from = "from", to = "to", vector = TRUE)
+write.table(pbmc.markers, "E3_5_markers_anno.tsv", sep="\t", dec=".", quote=FALSE, row.names=TRUE, col.names=NA)
