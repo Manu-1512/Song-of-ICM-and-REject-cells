@@ -1,0 +1,101 @@
+library("DESeq2")
+library(ggplot2)
+
+head(dat) ####### this is count matrix with genes and TE families
+id <- colnames(dat)
+dex <- c(rep("control", 3), rep("KD", 3))
+celltype <- rep("ESC", 6)
+metaData <- data.frame(id, dex, celltype)
+countData <- dat
+countData$genes <- row.names(countData)
+
+countData <- countData[,c(7,1:6)] # just putting the rownames in first coloumn
+
+dds <- DESeqDataSetFromMatrix(countData=countData, 
+                              colData=metaData, 
+                              design= ~ batch + dex, tidy = TRUE)
+
+vsdata <- vst(dds, blind=FALSE)
+norm_counts <- counts(dds, normalized=T)
+head(norm_counts); data <- norm_counts
+
+write.table(data, "Normalized_counts_ESRG_KD.tsv", row.names=T, col.names=NA, sep="\t", dec=".", quote=F)
+
+
+dds <- DESeqDataSetFromMatrix(countData = cts,
+                              colData = coldata,
+                              design = ~ condition)
+
+######################## Integrating data from different batches/lanes
+
+dex <- c(rep("control", 3), rep("KD", 3))
+celltype <- rep("ESC", 6)
+batch <- c("batch1", rep("batch2", 2), "batch1", rep("batch2", 2))
+
+metaData <- data.frame(id, dex, celltype, batch)
+
+countData <- dat
+countData$genes <- row.names(countData)
+
+countData <- countData[,c(7,1:6)]
+
+dds <- DESeqDataSetFromMatrix(countData=countData, 
+                              colData=metaData, 
+                              design= ~ batch + dex, tidy = TRUE)
+dds$dex <- factor(dds$dex, levels = c("control","KD"))
+dds <- DESeq(dds)
+res <- results(dds)
+
+res <- results(dds, contrast=c("dex","control","KD"))
+
+resLFC <- lfcShrink(dds, coef="dex_KD_vs_control", type="apeglm")
+
+resLFCbatch <- lfcShrink(dds, coef="batch_batch2_vs_batch1", type="apeglm")
+
+resOrdered <- res[order(res$pvalue),]
+summary(res)
+
+norm_counts <- counts(dds, normalized=T)
+head(norm_counts)
+library(vicar)
+library(limma)
+library(ruv)
+library(RUVSeq)
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("RUVSeq")
+
+
+library(RUVSeq)
+counts <- counts(dds, normalized=TRUE)
+replicates <- matrix(data=c(c(1,2), c(6,7)), byrow=TRUE, nrow=2)
+
+set <- newSeqExpressionSet(counts(dds))
+idx  <- rowSums(counts(set) > 5) >= 2
+set  <- set[idx, ]
+set <- betweenLaneNormalization(set, which="upper")
+
+not.sig <- rownames(res)[which(res$pvalue > .1)]
+
+empirical <- rownames(set)[ rownames(set) %in% not.sig ]
+
+set <- RUVg(set, empirical, k=2)
+
+pData(set)
+ddsruv <- dds
+ddsruv$W1 <- set$W_1
+ddsruv$W2 <- set$W_2
+design(ddsruv) <- ~ W1 + W2 + dex
+
+ddsrv <- DESeq(ddsruv)
+
+
+
+######
+compare1 <- DESeqDataSetFromMatrix(countData=countData, 
+                              colData=metaData, 
+                              design= ~ W1 + W2 + dex, tidy = TRUE)
+                              
+compare2 <- DESeqDataSetFromMatrix(countData=counts, 
+                              colData=metaData, 
+                              design= ~ dex, tidy = TRUE)
