@@ -1,0 +1,274 @@
+
+
+################### man is the matrix of TE families and genes taken together in one analysis. 
+######. See the code for genome indexing and alignment, and read counts for simultaneous analysis of genes and TEs
+####### This is what was used in this analysis in March 2017.
+###### Now the method is improved by us which also works with 10X genomicsand drop-seq types of sequencing data
+####### reach me on @manvendr7 to request the new codes
+
+
+
+pbmc <- CreateSeuratObject(raw.data = man, min.cells = 5, min.genes = 2000,  project = "tropho")
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = pbmc@data), value = TRUE)
+percent.mito <- Matrix::colSums(pbmc@raw.data[mito.genes, ])/Matrix::colSums(pbmc@raw.data)
+pbmc <- AddMetaData(object = pbmc, metadata = percent.mito, col.name = "percent.mito")
+VlnPlot(object = pbmc, features.plot = c("nGene", "nUMI", "percent.mito"), nCol = 3)
+dev.off()
+pbmc <- FilterCells(object = pbmc, subset.names = c("nGene", "percent.mito"), 
+    low.thresholds = c(2000, -Inf), high.thresholds = c(10000, 0.05))
+pbmc <- NormalizeData(object = pbmc, normalization.method = "LogNormalize", 
+    scale.factor = 100000)
+pbmc <- FindVariableGenes(object = pbmc, mean.function = ExpMean, dispersion.function = LogVMR, x.low.cutoff = 0.5, x.high.cutoff = 7, y.cutoff = 1.5)
+dev.off()
+pbmc <- ScaleData(object = pbmc, vars.to.regress = c("nUMI", "percent.mito"))
+pbmc <- RunPCA(object = pbmc, pc.genes = pbmc@var.genes, do.print = TRUE, pcs.print = 1:5, 
+    genes.print = 5)
+PCAPlot(object = pbmc, dim.1 = 1, dim.2 = 2)
+dev.off()
+library(RColorBrewer)
+hmcol<-brewer.pal(11,"Spectral")
+
+PCHeatmap(object = pbmc, pc.use = 1:6, cells.use = 100, do.balanced = TRUE, 
+    label.columns = FALSE, use.full = FALSE)
+dev.off()
+pbmc <- JackStraw(object = pbmc, num.replicate = 300, do.print = FALSE)
+JackStrawPlot(object = pbmc, PCs = 1:20)
+dev.off()
+germ <- FindClusters(object = pbmc, reduction.type = "pca", dims.use = 1:5, resolution = 0.6, print.output = 0, save.SNN = TRUE)
+manu <- RunTSNE(object = germ, dims.use = 1:5, do.fast = TRUE)
+TSNEPlot(object = manu)
+dev.off()
+
+library(monocle)
+monoc <- importCDS(manu)
+gbm_cds <- newCellDataSet(exprs(monoc),
+                  phenoData = monoc@phenoData,
+                  featureData = monoc@featureData,
+                  lowerDetectionLimit = 0.5,
+                  expressionFamily = negbinomial.size())
+HSMM<-detectGenes(gbm_cds,min_expr=0.1)
+expressed_genes<-row.names(subset(fData(HSMM),num_cells_expressed>=3))
+HSMM<-estimateSizeFactors(HSMM)
+HSMM<-estimateDispersions(HSMM)
+HSMM$celltype=pbmc@ident
+clustering_DEG_genes <- differentialGeneTest(HSMM[expressed_genes,],fullModelFormulaStr='~celltype', cores=1)
+HSMM_ordering_genes<- row.names(clustering_DEG_genes)[order(clustering_DEG_genes$qval)][1:1000]
+HSMM<- setOrderingFilter(HSMM, ordering_genes=HSMM_ordering_genes)
+HSMM<- reduceDimension(HSMM,method='DDRTree')
+HSMM<- orderCells(HSMM)
+plot_cell_trajectory(HSMM, color_by = "celltype")+
+ scale_color_manual(values=c("violetred", "darkblue", "yellowgreen"))+
+facet_wrap(~celltype,nrow=1)
+dev.off()
+
+disp_table <- dispersionTable(HSMM)
+head(disp_table)
+ordering_genes <- subset(disp_table,
+                  mean_expression >= 0.5 &
+                  dispersion_empirical >= 1 * dispersion_fit)$gene_id
+head(ordering_genes)
+head(clustering_DEG_genes)
+BEAM_res <- BEAM(HSMM, branch_point = 1, cores = 1)
+BEAM_res <- BEAM_res[order(BEAM_res$qval),]
+BEAM_res <- BEAM_res[,c("gene_short_name", "pval", "qval")]
+
+plot_genes_branched_heatmap(HSMM[row.names(BEAM_res),],
+                                          branch_point = 1,
+                                          num_clusters = 3,
+                                          cores = 1,
+                                          use_gene_short_name = T,
+                                          show_rownames = T)
+dev.off()
+
+BEAM(HSMM, fullModelFormulaStr = "~sm.ns(Pseudotime, df = 3)*Branch",
+  reducedModelFormulaStr = "~sm.ns(Pseudotime, df = 3)",
+  branch_states = NULL, branch_point = 1, relative_expr = TRUE,
+  branch_labels = NULL, verbose = FALSE, cores = 1)
+  
+  
+  
+my_pseudotime_de <- differentialGeneTest(HSMM,
+                                         fullModelFormulaStr = "~sm.ns(Pseudotime)",
+                                         cores = 1)
+my_pseudotime_de %>% arrange(qval) %>% head() %>% select(id) -> my_pseudotime_gene
+my_pseudotime_gene <- my_pseudotime_gene$id
+
+library(dplyr)
+
+my_pseudotime_de %>% arrange(qval) %>% head() %>% select(gene_short_name) -> my_pseudotime_gene
+my_pseudotime_gene <- my_pseudotime_gene$gene_short_name
+
+my_cds_subset <- clusterCells(my_cds_subset,
+                              rho_threshold = 2,
+                              delta_threshold = 10,
+                              skip_rho_sigma = T,
+                              verbose = FALSE)
+plot_cell_clusters(my_cds_subset)
+dev.off()
+clustering_DEG_genes <- differentialGeneTest(my_cds_subset,
+                                             fullModelFormulaStr = '~Cluster',
+                                             cores = 1)
+                                             
+my_ordering_genes <- row.names(clustering_DEG_genes)[order(clustering_DEG_genes$qval)][1:1000]
+g_genes <- row.names(clustering_DEG_genes)[order(clustering_DEG_genes$qval)][1:1000]
+my_cds_subset <- setOrderingFilter(my_cds_subset, ordering_genes = my_ordering_genes)
+my_cds_subset <- reduceDimension(my_cds_subset, method = 'DDRTree')
+
+####################
+############## Diffusion maps of E5 cells
+library(destiny)
+
+
+
+data.mvr <- data[which(row.names(data) %in% manu.sig.genes),]
+
+data.mvr <- t(data.mvr)
+
+raw_ct <- as.data.frame(data.mvr)
+
+ num_cells <- gsub('^E(\\d+).*$','\\1', row.names(raw_ct))
+
+ct$num_cells <-as.integer(num_cells)
+
+dm1 <- DiffusionMap(ct)
+                  
+                  palette(cube_helix(6))
+# configure color palette
+#plot(dm, pch = 20, col_by ="num_cells", legend_main ="Cell stage")
+
+ct <- as.ExpressionSet(raw_ct)
+
+dm <- DiffusionMap(ct)
+
+install.packages("rgl")
+library(rgl)
+
+library(RColorBrewer)
+palette(brewer.pal(n = 8, name = "Set1"))
+
+
+plot(dm, 1:2, col_by='num_cells', pch= 20, legend_main="E5_cells", pointts=5)
+dev.off()
+
+dpt <- DPT(dm)
+
+par(mfrow = c(5,3), pch = 20, mar = c(2,2,0,1)) 
+plot(dpt, col_by = 'BIK', cex=2, pal = viridis::magma)
+plot(dpt, col_by = 'PPAP2C', cex=2, pal = viridis::magma)
+plot(dpt, col_by = 'BAIAP2L2', cex=2, pal = viridis::magma)
+plot(dpt, col_by = 'IL6R', cex=2, pal = viridis::magma)
+plot(dpt, col_by = 'EPHA4', cex=2, pal = viridis::magma)
+plot(dpt, col_by = 'IFI16', cex=2, pal = viridis::magma)
+plot(dpt, col_by = 'NANOG', cex=2, pal = viridis::magma)
+plot(dpt, col_by = 'IFITM1', cex=2, pal = viridis::magma)
+plot(dpt, col_by = 'GDF3', cex=2, pal = viridis::magma)
+plot(dpt, col_by = 'BMP2', cex=2, pal = viridis::magma)
+plot(dpt, col_by = 'GPX2', cex=2, pal = viridis::magma)
+plot(dpt, col_by = 'LBH', cex=2, pal = viridis::magma)
+plot(dpt, col_by = 'TMPRSS2', cex=2, pal = viridis::magma)
+plot(dpt, col_by = 'GATA2', cex=2, pal = viridis::magma)
+plot(dpt, col_by = 'ABCG2', cex=2, pal = viridis::magma)
+dev.off()
+
+
+#####
+
+
+
+
+################SCDE for Differentially expressed rows (genes and TEs)
+########### this has count matrix with ICM and NCC cells
+scde.fitted.model <- scde.error.models(counts=counts,groups=groups,n.cores=n.cores,save.model.plots=F)
+
+save(scde.fitted.model,file="pe_scde_fit.RData")
+
+scde.prior <- scde.expression.prior(models=scde.fitted.model,counts=counts)
+
+ediff <- scde.expression.difference(scde.fitted.model,counts,scde.prior,groups=groups,n.cores=n.cores)
+
+p.values <- 2*pnorm(abs(ediff$Z),lower.tail=F) # 2-tailed p-value
+
+p.values.adj <- 2*pnorm(abs(ediff$cZ),lower.tail=F) # Adjusted to control for FDR
+
+significant.genes <- row.names(counts)
+
+length(significant.genes)
+
+ord <- order(p.values.adj[significant.genes]) # order by p-value
+
+manu2 <- cbind(ediff[significant.genes,1:3],p.values.adj[significant.genes])[ord,]
+
+colnames(manu) <- c("Lower bound","log2 fold change","Upper bound","adj_p-value")
+
+############ checking the quality
+scde.test.gene.expression.difference("NANOG",models=scde.fitted.model,counts=counts,prior=scde.prior)
+dev.off()
+scde.test.gene.expression.difference("HHLA1",models=scde.fitted.model,counts=counts,prior=scde.prior)
+dev.off()
+scde.test.gene.expression.difference("BMP2",models=scde.fitted.model,counts=counts,prior=scde.prior)
+dev.off()
+######## manu2 and manu3 are dataframes with differential expression using SCDE
+manu.avg=average.expression(manu)
+manu.avg$p_val_ICM_NCC <- manu2$adj.p-value
+manu.avg$p_val_TE_NCC <- manu3$adj.p-value
+attach(manu.avg)
+
+
+
+############################### Plotting differentially expressed TEs and genes
+
+
+
+png("DEG_rmsk_NCC_vs_ICM.png",  width = 12.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+plot(ICM,NCC, pch=16, cex=1,
+                     ylab="Log2 Counts per Million (NCC)", xlab="Log2 Counts per Million (ICM)",
+ main="Differentially Expressed Repeat Families",
+                   col=ifelse(ICM-NCC >= 0.80 & apply(nbt.avg, 1, mean)>5 & p_val_ICM_NCC < 0.05, 
+                     "red2", ifelse(ICM-NCC < -0.80 & apply(nbt.avg, 1, mean)>5 & p_val_ICM_NCC < 0.05,
+ "blue2", rgb(100,100,100,100,maxColorValue=255))))
+ abline(lm(NCC ~ ICM), col="grey", lwd=3, lty=3) # regression line (y~x) 
+dev.off()
+
+
+
+
+plot(TE,NCC, pch=16, cex=1,
+                     ylab="Log2 Counts per Million (NCC)", xlab="Log2 Counts per Million (TE)",
+ main="Differentially Expressed Repeat Families",
+                   col=ifelse(PE-NCC >= 0.80 & apply(nbt.avg, 1, mean)>5 & p_val_TE_NCC < 0.05, 
+                     "red2", ifelse(PE-NCC < -0.80 & apply(nbt.avg, 1, mean)>5 & p_val_TE_NCC < 0.05,
+ "blue2", rgb(100,100,100,100,maxColorValue=255))))
+ abline(lm(PE ~ ICM), col="grey", lwd=3, lty=3) # regression line (y~x) 
+dev.off()
+
+
+
+
+############################ These plots are not shown in the manuscript
+
+
+png("DEG_NCC_vs_ICM.png",  width = 12.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+plot(ICM,NCC, pch=16, cex=1,
+                     ylab="Log2 (TPM+1) NCC", xlab="Log2 (TPM+1) ICM",
+ main="ICM and NCC Comparison",
+                   col=ifelse(ICM-NCC >= 1 & apply(nbt.avg[,2:3], 1, mean)>5 & p_val_ICM_NCC < 0.05, 
+                     "red2", ifelse(ICM-NCC < -1 & apply(nbt.avg[,2:3], 1, mean)>5 & p_val_ICM_NCC < 0.05,
+ "blue2", rgb(100,100,100,100,maxColorValue=255))))
+ abline(lm(NCC ~ ICM), col="grey", lwd=3, lty=3) # regression line (y~x) 
+ with(E5.top,
+					        text(E5.top$ICM,E5.top$NCC,
+					        row.names(E5.top),cex=0.8, pos=4, col="black"))
+dev.off()
+
+png("DEG_NCC_vs_ICM_demo.png",  width = 18.7, height = 18.8, units = "cm", res = 600, pointsize = 12)
+plot(ICM,PreTE, pch=16, cex=1,
+                     ylab="Log2 (TPM+1) PreTE", xlab="Log2 (TPM+1) ICM",
+ main="ICM and NCC Comparison",
+                   col=ifelse(ICM-PreTE >= 1 & apply(nbt.avg[,c(1:2)], 1, mean)>5 & p_val_TE_NCC < 0.05, 
+                     "red2", ifelse(ICM-PreTE < -1 & apply(nbt.avg[,c(1,2)], 1, mean)>5 & p_val_TE_NCC < 0.05,
+ "blue2", rgb(100,100,100,100,maxColorValue=255))))
+ abline(lm(PreTE ~ ICM), col="grey", lwd=3, lty=3) # regression line (y~x) 
+ with(E5.PreTE_ICM_top,
+					        text(E5.PreTE_ICM_top$ICM,E5.PreTE_ICM_top$PreTE,
+					        row.names(E5.PreTE_ICM_top),cex=0.8, pos=4, col="black"))
+dev.off()
