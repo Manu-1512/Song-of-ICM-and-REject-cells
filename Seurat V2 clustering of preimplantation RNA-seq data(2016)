@@ -1,5 +1,5 @@
 
-
+####. scRNA-seq data was downloaded in the read count expression matrices for E3-E7 from the ArrayExpress: E-MTAB-3929
 counts <- read.delim("../Petropolous_scRNAseq_expression.txt", row.names=1)
 
 filter <- apply(counts, 1, function(x) length(x[x>10])>=1)
@@ -76,3 +76,5 @@ png("heatmap_Markers_Morula_ICM_EPI_PE.png",  width = 16.8, height = 16.8, units
 doHeatMap(nbt,genes.use = markers_Mor_icm_epi_pe_all.use,slim.col.label = TRUE, cells.use = which.cells(nbt,c(4,5,6,7)), remove.key = FALSE,cexRow=0.05, col.use=myheatcol)
 dev.off()
 
+############################### The above step was repeated for the Yan et al., 2013 data which was also publicly available. This was done independently, and also together with the merged analysis of 
+#Petropolous et al., 2016
