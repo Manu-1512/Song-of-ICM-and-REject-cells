@@ -1,0 +1,294 @@
+
+png("DEG_GFP_High_Low_array_rnaseq.png",  width = 22.7, height = 18.8, units = "cm", res = 600, pointsize = 12)
+plot(logFC.GFP.high_vs_neg, manu_fold,
+                                pch=1, cex=1, 
+                     xlab="Mean Expression level (log2 FPKM)", ylab="Log2 Fold Change",
+ main="Comparison of DEGs array vs RNA-seq",
+col=ifelse(manu_fold > 0 & logFC.GFP.high_vs_neg > 0, 
+                     "darkred", ifelse(manu_fold < 0 & logFC.GFP.high_vs_neg < 0,
+    "midnightblue", rgb(red = 0.25, green = 0.25, blue = 0.1, alpha = 0.2))
+   )
+ )
+ abline(0,0)
+dev.off()
+
+
+dat <- merge(dat, kdaray, by="row.names", all=FALSE)
+
+
+row.names(dat) <- dat[,1]
+
+
+dat <- dat[,-1]
+
+
+
+
+    
+gfp.ra <- subset(dat, manu_fold > 0 | manu_fold < 0)
+
+
+gfp.ra <- subset(gfp.ra, P.Value < 0.05)
+
+
+cor(gfp.ra$manu_fold, gfp.ra$logFC.shHERVH.vs.shGFP)
+
+
+gfp_kd_pattern <- subset(gfp.ra, (manu_fold > 0.4 & logFC.shHERVH.vs.shGFP < -0.2) | (manu_fold < -0.4 & logFC.shHERVH.vs.shGFP > 0.2))
+dim(gfp_kd_pattern)
+write.table(gfp_kd_pattern, "GFP_High_KD_HERVH_pattern.tsv", row.names=FALSE, col.names=TRUE, sep="\t", dec=".", quote=FALSE)
+write.table(gfp_kd_pattern, "GFP_High_KD_HERVH_pattern.tsv", row.names=TRUE, col.names=NA, sep="\t", dec=".", quote=FALSE)
+
+
+gfp.ra_sig <- subset(gfp.ra, manu_fold > 1 | manu_fold < -1)
+
+
+load("markers.RData")
+
+library(ggplot2)
+
+
+dat.om$Pheno <- factor(dat.om$Pheno, levels = dat.om$Pheno)
+
+
+library(reshape2)
+
+
+icm.m <- melt(icm.m)
+
+
+
+
+png("ICM_markers_GFP_High_KD.png",  width = 6.7, height = 10.8, units = "cm", res = 600, pointsize = 12)
+p <- ggplot(icm.m, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=0.5, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=5)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+
+
+icm.m <- EPI_mark[,c(1,5)]
+icm.m <- melt(icm.m)
+icm.m
+
+
+
+png("EPI_markers_GFP_High_KD.png",  width = 6.7, height = 10.8, units = "cm", res = 600, pointsize = 12)
+p <- ggplot(icm.m, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=0.5, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=5)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+
+
+
+icm.m <- ICM_EPI_mark[,c(1,5)]
+icm.m <- melt(icm.m)
+png("ICM_EPI_markers_GFP_High_KD.png",  width = 6.7, height = 10.8, units = "cm", res = 600, pointsize = 12)
+p <- ggplot(icm.m, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=0.5, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=5)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+
+
+
+
+icm.m <- PE_mark[,c(1,5)]
+icm.m <- melt(icm.m)
+png("ICM_PE_markers_GFP_High_KD.png",  width = 6.7, height = 10.8, units = "cm", res = 600, pointsize = 12)
+p <- ggplot(icm.m, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=0.5, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=5)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+icm.m <- ICM_PE_mark[,c(1,5)]
+icm.m <- melt(icm.m)
+png("ICM_PE_markers_GFP_High_KD.png",  width = 6.7, height = 10.8, units = "cm", res = 600, pointsize = 12)
+p <- ggplot(icm.m, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=0.5, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=5)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+
+
+icm.m <- PE_mark[,c(1,5)]
+icm.m <- melt(icm.m)
+png("PE_markers_GFP_High_KD.png",  width = 6.7, height = 10.8, units = "cm", res = 600, pointsize = 12)
+p <- ggplot(icm.m, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=0.5, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=5)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+icm.m <- HH_mark[,c(1,5)]
+icm.m <- melt(icm.m)
+png("HERVH_markers_GFP_High_KD.png",  width = 6.7, height = 10.8, units = "cm", res = 600, pointsize = 12)
+p <- ggplot(icm.m, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=0.5, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=5)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+ls()
+
+
+icm.m <- Damage_mark[,c(1,5)]
+icm.m <- melt(icm.m)
+png("DNA_damage_markers_GFP_High_KD.png",  width = 6.7, height = 10.8, units = "cm", res = 600, pointsize = 12)
+p <- ggplot(icm.m, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=0.5, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=5)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+ls()
+
+
+icm.m <- P53_damage_mark[,c(1,5)]
+icm.m <- melt(icm.m)
+png("P53_damage_markers_GFP_High_KD.png",  width = 6.7, height = 10.8, units = "cm", res = 600, pointsize = 12)
+p <- ggplot(icm.m, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=0.5, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=5)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+
+
+icm.m <- Telomere_mark[,c(1,5)]
+icm.m <- melt(icm.m)
+png("Telomere_markers_GFP_High_KD.png",  width = 6.7, height = 10.8, units = "cm", res = 600, pointsize = 12)
+p <- ggplot(icm.m, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=0.5, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=5)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+ICM_mark
+row.names(ICM_mark)
+row.names(ICM_EPI_mark)
+row.names(EPI_mark)
+row.names(ICM_PE_mark)
+row.names(PE_mark)
+row.names(HH_mark)
+P53_damage_mark
+row.names(Telomere_mark)
+Damage_mark
+row.names(Damage_mark
+)
+row.names(P53_damage_mark)
+
+
+#################
+
+
+rmsk <- read.delim("../../Arena_selection/RMSK/GFP/GFP_High_low_transposons.txt", row.names=1, comment.char="#")
+rmsk[,2] <- rmsk[,2]/55.422621
+rmsk[,3] <- rmsk[,3]/52.630891
+head(rmsk)
+rmsk[,2:3] <- log2(rmsk[,2:3]+1)
+rmsk$mean <- apply(rmsk[,2:3], 1, mean)
+rmsk$diff <- rmsk$HERVH_High-rmsk$HERVH_Low
+head(rmsk)
+rmsk <- rmsk[order(rmsk[,5]),]
+head(rmsk)
+tail(rmsk)
+tail(rmsk, n=20)
+rmsk[grep("HERVH", row.names(rmsk)),]
+history()
+
+
+rmsk <- read.delim("../../Arena_selection/RMSK/GFP/GFP_High_low_transposons.txt", row.names=1, comment.char="#")
+rmsk[,3] <- rmsk[,3]/55.422621
+rmsk[,2] <- rmsk[,2]/52.630891
+
+
+rmsk$mean <- apply(rmsk[,2:3], 1, mean)
+rmsk$diff <- rmsk$HERVH_Low-rmsk$HERVH_High
+head(rmsk)
+rmsk <- rmsk[order(rmsk[,5]),]
+
+
+
+
+
+
+attach(rmsk)
+
+
+wilcox.test(HERVH_High, HERVH_Low)
+
+
+dat.rmsk <- rmsk[,2:3]
+
+
+colnames(dat.rmsk) <- c("HERVH_Low","HERVH_High")
+dat.rmsk <- melt(dat.rmsk)
+
+
+p <- ggplot(dat.rmsk, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=0.5, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=5)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+p <- ggplot(dat.rmsk, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=2, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=1)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+png("Telomere_markers_GFP_High_KD.png",  width = 10.7, height = 10.8, units = "cm", res = 600, pointsize = 12)
+p <- ggplot(dat.rmsk, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=2, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=1)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+icm.m <- Telomere_mark[,c(1,5)]
+icm.m <- melt(icm.m)
+png("Telomere_markers_GFP_High_KD.png",  width = 6.7, height = 10.8, units = "cm", res = 600, pointsize = 12)
+p <- ggplot(icm.m, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=0.5, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=5)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+png("Hominoid_transposons_GFP_High_KD.png",  width = 10.7, height = 10.8, units = "cm", res = 600, pointsize = 12)
+p <- ggplot(dat.rmsk, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=2, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=1)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+png("Hominoid_transposons_GFP_High_KD.png",  width = 8.7, height = 10.8, units = "cm", res = 600, pointsize = 12)
+p <- ggplot(dat.rmsk, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=2, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=1)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+save.image("Markers_boxplot.RData")
+savehistory("Markers_boxplot.Rhistory")
