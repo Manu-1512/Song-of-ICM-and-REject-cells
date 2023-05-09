@@ -1,0 +1,529 @@
+
+manu.monkey <- monkey[grep("^STS$|^PGF$|HSD3B1", row.names(monkey)),]
+
+sva.f <- as.numeric(manu.monkey[1,])
+png("HSD3B1_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="HSD3B1")
+dev.off()
+sva.f <- as.numeric(manu.monkey[2,])
+png("PGF_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="PGF")
+dev.off()
+sva.f <- as.numeric(manu.monkey[3,])
+png("STS_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="STS")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[1,])
+png("APOA1_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="APOA1")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[2,])
+png("COL4A1_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="COL4A1")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[3,])
+png("DLX3_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="DLX3")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[4,])
+png("DLX5_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="DLX5")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[5,])
+png("GATA4_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="GATA4")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[6,])
+png("GDF3_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="GDF3")
+dev.off()
+
+
+
+sva.f <- as.numeric(manu.monkey[7,])
+png("NANOG_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="NANOG")
+dev.off()
+
+
+png("GSTM5_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="GSTM5")
+dev.off()
+
+
+sva.f <- as.numeric(manu.monkey[8,])
+png("NODAL_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="NODAL")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[9,])
+png("POU5F1_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="POU5F1")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[10,])
+png("PRDM14_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="PRDM14")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[11,])
+png("SPIC_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="SPIC")
+dev.off()
+
+
+png("ERVFRD-1_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", ylim=c(0,12), border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="ERVFRD-1")
+dev.off()
+
+
+png("ERVV-1_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", ylim=c(0,12), border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="ERVV-1")
+dev.off()
+
+png("HHLA1_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", ylim=c(0,12), border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="HHLA1")
+dev.off()
+
+
+png("ERVV-2_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", ylim=c(0,12), border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="ERVV-2")
+dev.off()
+
+png("ERVV-2_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="ERVV-2")
+dev.off()
+
+
+sva.f <- as.numeric(manu.monkey[7,])
+png("IFITM1_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="IFITM1")
+dev.off()
+
+png("MAP4K1_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="MAP4K1")
+dev.off()
+
+
+png("ATP12A_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="ATP12A")
+dev.off()
+
+
+png("HHLA1_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="HHLA1")
+dev.off()
+
+h<-hist(x, breaks=200, col="steelblue", xlim=c(-5,5), xlab="Log 2 Fold Change\nhuman vs cynomolgus blastocyst",
+   main="")
+xfit<-seq(min(x),max(x),length=100)
+yfit<-dnorm(xfit,mean=mean(x),sd=sd(x))
+yfit <- yfit*diff(h$mids[1:2])*length(x)
+lines(xfit, yfit, col="black", lwd=2, lty=5) 
+
+
+png("PRR9_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="PRR9")
+dev.off()
+
+png("GAGE13_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", ylim=c(0,12),border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="GAGE13")
+dev.off()
+
+png("ABHD12B_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="ABHD12B")
+dev.off()
+
+
+png("ERVV-1_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="ERVV-1")
+dev.off()
+
+
+png("ERVFRD-1_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="ERVFRD-1")
+dev.off()
+
+
+png("SCGB3A2_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="SCGB3A2")
+dev.off()
+png("MAP4K1_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="MAP4K1")
+dev.off()
+
+
+png("SCGB3A2_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", ylim=c(0,12), border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="SCGB3A2")
+dev.off()
+
+#####
+png("ATP12A_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="ATP12A")
+dev.off()
+
+###
+
+png("PRR9_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), ylim=c(0,12),colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="PRR9")
+dev.off()
+
+png("KLK4_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="KLK4")
+dev.off()
+
+png("GAGE13_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="GAGE13")
+dev.off()
+
+
+png("CYP11A1_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="CYP11A1")
+dev.off()
+
+png("MAP4K1_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", ylim=c(0,12),border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="MAP4K1")
+dev.off()
+
+
+png("IGFBP2_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95",border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="IGFBP2")
+dev.off()
+################
+
+
+
+manu.human <- human[grep("NANOG$|POU5F1$|SPIC$|NODAL|PRDM14|GDF3|IFITM1|GATA4|COL4A1|APOA1|DLX3|DLX5|TFAP2A", row.names(human)),]
+manu.human <- manu.human[-2,]
+
+
+manu.human <- manu.human[-13,]
+row.names(manu.human)
+####
+ FindMarkers(object = nbt2, ident.1 = c(2,4), ident.2 = c(8, 9),  min.pct = 0.25)
+ FindMarkers(object = nbt2, ident.1 = 10, ident.2 = c(2,4,6,7),  min.pct = 0.25)
+   
+####
+
+sva.f <- as.numeric(manu.human[1,])
+png("APOA1_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="APOA1")
+dev.off()
+
+
+png("CYP11A1_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="CYP11A1")
+dev.off()
+
+sva.f <- as.numeric(manu.human[2,])
+png("COL4A1_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="COL4A1")
+dev.off()
+
+
+sva.f <- as.numeric(manu.human[3,])
+png("DLX3_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="DLX3")
+dev.off()
+
+
+sva.f <- as.numeric(manu.human[4,])
+png("DLX5_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="DLX5")
+dev.off()
+
+
+sva.f <- as.numeric(manu.human[5,])
+png("GATA4_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="GATA4")
+dev.off()
+
+
+sva.f <- as.numeric(manu.human[6,])
+png("GDF3_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="GDF3")
+dev.off()
+
+sva.f <- as.numeric(manu.human[8,])
+png("NANOG_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="NANOG")
+dev.off()
+
+
+sva.f <- as.numeric(manu.human[9,])
+png("NODAL_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="NODAL")
+dev.off()
+
+
+sva.f <- as.numeric(manu.human[10,])
+png("POU5F1_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="POU5F1")
+dev.off()
+
+
+sva.f <- as.numeric(manu.human[11,])
+png("PRDM14_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="PRDM14")
+dev.off()
+
+
+sva.f <- as.numeric(manu.human[12,])
+png("SPIC_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="SPIC")
+dev.off()
+
+
+
+
+
+
+
+manu.monkey <- monkey[grep("NANOG$|POU5F1$|SPIC$|NODAL|PRDM14|GDF3|IFITM1|GATA4|COL4A1|APOA1|DLX3|DLX5|TFAP2A", row.names(monkey)),]
+manu.monkey
+names(manu.monkey)
+row.names(manu.monkey)
+
+sva.f <- as.numeric(manu.monkey[1,])
+png("APOA1_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="APOA1")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[2,])
+png("COL4A1_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="COL4A1")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[3,])
+png("DLX3_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="DLX3")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[4,])
+png("DLX5_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="DLX5")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[5,])
+png("GATA4_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="GATA4")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[6,])
+png("GDF3_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="GDF3")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[7,])
+png("NANOG_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="NANOG")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[8,])
+png("NODAL_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="NODAL")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[9,])
+png("POU5F1_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="POU5F1")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[10,])
+png("PRDM14_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="PRDM14")
+dev.off()
+
+sva.f <- as.numeric(manu.monkey[11,])
+png("SPIC_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="SPIC")
+dev.off()
+
+
+
+getwd()
+ls()
+
+
+
+head(markers.iept)
+subset(markers.iept, cluster=="TE" & myAUC>0.86)$gene
+subset(markers.up.monk, cluster=="preL.TE" & myAUC>0.86)$gene
+head(markers.up.monk)
+unique(markers.up.monk$cluster)
+subset(markers.up.monk, cluster=="PreL.TE" & myAUC>0.86)$gene
+mon_te_genes <- subset(markers.up.monk, cluster=="PreL.TE" & myAUC>0.86)$gene
+hom_te_genes <- subset(markers.iept, cluster=="TE" & myAUC>0.86)$gene
+mon_te_genes[which(mon_te_genes%in%hom_te_genes),]
+mon_te_genes[which(mon_te_genes[,1]%in%hom_te_genes[,1]),]
+hom_te_genes <- subset(markers.iept, cluster=="TE" & myAUC>0.86)
+mon_te_genes <- subset(markers.up.monk, cluster=="PreL.TE" & myAUC>0.86)
+head(hom_te_genes)
+mon_te_genes[which(mon_te_genes$gene%in%hom_te_genes$gene),]
+dev.off()
+manu.monkey <- monkey[grep("^STS$|^PGF$|HSD3B1", row.names(monkey)),]
+manu.monkey
+sva.f <- as.numeric(manu.monkey[1,])
+png("HSD3B1_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="HSD3B1")
+dev.off()
+sva.f <- as.numeric(manu.monkey[2,])
+png("PGF_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="PGF")
+dev.off()
+sva.f <- as.numeric(manu.monkey[3,])
+png("STS_monkey.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:30],sva.f[83:116],sva.f[31:82],sva.f[117:168],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="STS")
+dev.off()
+
+manu.human <- human[grep("^STS$|^PGF$|HSD3B1", row.names(human)),]
+sva.f <- as.numeric(manu.human[1,])
+png("HSD3B1_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="HSD3B1")
+dev.off()
+sva.f <- as.numeric(manu.human[2,])
+png("PGF_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:74],sva.f[75:126],sva.f[127:171],sva.f[172:270],col="grey95", border="black", lwd=2,  pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("ICM","EPI","PE","TE"))
+title(main="PGF")
+dev.off()
+sva.f <- as.numeric(manu.human[3,])
+png("STS_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+
+
+
+
+
+
+
+#####
+
+png("HMGXB4_mouse.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:6],sva.f[7:12],sva.f[c(15:23,25,30)], sva.f[c(13,14,24,26:29,31:35)],sva.f[36:49],sva.f[50:77],sva.f[78:121],sva.f[122:249], col="grey95", border="black", lwd=2, pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("Oocyte","Zygote","Early_Two_Cell","Late_Two_Cell","Four_Cell","Eight_Cell","Sixteen_Cell","Blastocyst"))
+title(main="HMGXB4")
+dev.off()
+
+
+png("HMGXB4_mouse.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:3],sva.f[4:6],sva.f[7:12],sva.f[13:20], sva.f[21:40],sva.f[41:56],sva.f[57:80], col="grey95", border="black", lwd=2, pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("Oocyte","Zygote","Two_Cell","Four_Cell","Eight_Cell","Morulae","Blastocyst"))
+title(main="HMGXB4")
+dev.off()
+
+
+
+
+#######
+
+
+hmg <- dat[grep("HMGXB4", dat[,1]),]
+hmg
+row.names(hmg) <- hmg[,1]
+hmg <- hmg[,-1]
+hmg
+names(hmg)
+hmg <- hmg[,c(1:56,81:104)]
+hmg
+names(hmg)
+sva.f = as.numeric(hmg)
+vioplot(sva.f[1:3],sva.f[4:6],sva.f[7:12],sva.f[13:20], sva.f[21:40],sva.f[41:56],sva.f[57:80], col="grey95", border="black", lwd=2, pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("Oocyte","Zygote","Two_Cell","Four_Cell","Eight_Cell","Morulae","Blastocyst"))
+title(main="HMGXB4")
+dev.off()
+library(vioplot)
+vioplot(sva.f[1:3],sva.f[4:6],sva.f[7:12],sva.f[13:20], sva.f[21:40],sva.f[41:56],sva.f[57:80], col="grey95", border="black", lwd=2, pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("Oocyte","Zygote","Two_Cell","Four_Cell","Eight_Cell","Morulae","Blastocyst"))
+title(main="HMGXB4")
+dev.off()
+vioplot(sva.f[1:3],sva.f[4:6],sva.f[7:12],sva.f[13:20], sva.f[21:40],sva.f[41:56],sva.f[57:80], col="grey95", border="black", lwd=2, pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("Oocyte","Zygote","Two_Cell","Four_Cell","Eight_Cell","Morulae","Blastocyst"))
+title(main="HMGXB4 Human ED")
+dev.off()
+png("HMGXB4_human.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:3],sva.f[4:6],sva.f[7:12],sva.f[13:20], sva.f[21:40],sva.f[41:56],sva.f[57:80], col="grey95", border="black", lwd=2, pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("Oocyte","Zygote","Two_Cell","Four_Cell","Eight_Cell","Morulae","Blastocyst"))
+title(main="HMGXB4 Human ED")
+dev.off()
+sva.f <- log2(sva.f+1)
+sva.f
+vioplot(sva.f[1:3],sva.f[4:6],sva.f[7:12],sva.f[13:20], sva.f[21:40],sva.f[41:56],sva.f[57:80], col="grey95", border="black", lwd=2, pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("Oocyte","Zygote","Two_Cell","Four_Cell","Eight_Cell","Morulae","Blastocyst"))
+title(main="HMGXB4 Human ED")
+dev.off()
+png("HMGXB4_human_log.png",  width = 8.7, height = 12.8, units = "cm", res = 600, pointsize = 12)
+vioplot(sva.f[1:3],sva.f[4:6],sva.f[7:12],sva.f[13:20], sva.f[21:40],sva.f[41:56],sva.f[57:80], col="grey95", border="black", lwd=2, pchMed=19,rectCol=c("white"), colMed="darkred", wex=1,lty=7, names=c("Oocyte","Zygote","Two_Cell","Four_Cell","Eight_Cell","Morulae","Blastocyst"))
+title(main="HMGXB4 Human ED")
+dev.off()
+dim(dat)
+dat[grep("PIWI", dat[,1]),]
+dat[grep("ZNF468", dat[,1]),]
+dat[grep("ZNF783", dat[,1]),]
+dat[grep("ZNF846", dat[,1]),]
+hmg
+history()
+history(max.show=100)
