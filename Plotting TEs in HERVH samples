@@ -1,0 +1,122 @@
+high <- read.delim("GFP_high_rmsk_loci.tsv", header=T, comment.char="#", sep="\t")
+
+
+high <- high[,c(1,6,7)]
+
+
+colnames(high) <- c("TE","length","GFP_High")
+
+
+
+low <- read.delim("GFP_low_rmsk_loci.tsv", header=T, comment.char="#", sep="\t")
+low <- low[,c(1,6,7)]
+colnames(low) <- c("TE","length","GFP_Low")
+
+
+dat <- cbind(high,low[,3])
+
+
+colnames(dat)[4] <- "GFP_Low"
+
+
+dat <- dat[,-2]
+
+
+
+######Normalizing with library size
+dat[,2] <- dat[,2]/55.422621 
+dat[,3] <- dat[,3]/52.630891 
+
+
+row.names(dat) <- make.names(dat[,1], unique=TRUE)
+
+
+dat <- dat[,-1]
+
+
+dat <- log2(dat+1)
+
+
+data <- dat[apply(dat, 1, function(row){any(row>1)}),]
+
+
+colnames(data) <- c("GFP_Low", "GFP_High")
+
+
+hh <- data[grep("HERVH.int", row.names(data)),]
+
+
+hk <- data[grep("HERVH.int", row.names(data)),]
+
+
+sva <- data[grep("SVA_D|SVA_E", row.names(data)),]
+wilcox.test(sva[,1], sva[,2])
+
+
+dim(data[grep("L1PA2", row.names(data)),])
+data[grep("L1PA2", row.names(data)),]
+dim(data[grep("L1HS", row.names(data)),])
+data[grep("L1HS", row.names(data)),]
+
+
+hk <- data[grep("HERVK.int", row.names(data)),]
+
+library(reshape2)
+hk.melt <- melt(hk)
+
+
+library(ggplot2)
+
+
+hk <- hk[,c(2,1)]
+hk.melt <- melt(hk)
+
+
+
+
+png("LTR5_HS_HERVK_GFP_High_KD.png",  width = 8.7, height = 10.8, units = "cm", res = 600, pointsize = 12)
+p <- ggplot(hk.melt, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=2, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=1)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+hh <- hh[,c(2,1)]
+hh.melt <- melt(hh)
+
+
+
+
+png("LTR7_HERVH_GFP_High_KD.png",  width = 8.7, height = 10.8, units = "cm", res = 600, pointsize = 12)
+p <- ggplot(hh.melt, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=2, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=1)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+
+
+
+sva <- sva[,c(2,1)]
+sva.melt <- melt(sva)
+
+
+
+
+png("SVA_D_E_F_GFP_High_KD.png",  width = 8.7, height = 10.8, units = "cm", res = 600, pointsize = 12)
+p <- ggplot(sva.melt, aes(variable, value, color=variable))+ 
+  geom_boxplot(lwd=2, alpha=0.5, color=c("darkred","midnightblue"), fill=c("darkred","midnightblue"))+
+  geom_jitter(position=position_jitter(0.18),alpha=0.9, size=1)+ scale_color_manual(values=c("darkred","midnightblue")) +
+  guides(fill = FALSE, color = FALSE, linetype = FALSE, shape = FALSE) +
+  theme_classic()    
+  p+scale_color_manual(values=c("darkred","midnightblue")) + theme_minimal()
+dev.off()
+wilcox.test(sva[,1], sva[,2])
+wilcox.test(hk[,1], hk[,2])
+wilcox.test(hh[,1], hh[,2])
+
+
+save.image("rmsk.RData")
+savehistory("rmsk.Rhistory")
