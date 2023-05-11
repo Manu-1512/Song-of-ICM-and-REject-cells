@@ -1,4 +1,11 @@
-count normilized to dapi					
+########### This experiment was done in multiple batches. 
+
+
+
+############ Batch 1, Batch 2, Capsaicin, for H2AX-gamma and CASP3
+
+
+#####count normilized to dapi					
 	technical replicate	H2AX	caspase	mean H2AX	mean caspase
 shscr + diluent	1	0.302238806	0.027363184	0.260455089	0.03317279
 	2	0.150980392	0.02745098		
@@ -26,3 +33,60 @@ shscr + diluent	normilized to sample’s mean value			0.474123589	0.156342657
 shHERVH + diluent				1.001962428	1.234186636
 shscr + capsaicin				1.731316857	1.533837408
 shHERVH + capsaicin				0.792597126	1.075633299
+
+############# Batch 2, Capsaicin, for H2AX-gamma and CASP3
+
+###########  Count normilized to dapi					
+	technical replicate	H2AX	caspase	mean H2AX	mean caspase
+shscr + diluent 	1	0.121387283	0.206165703	0.155883377	0.168076234
+	2	0.132352941	0.156862745		
+	3	0.224444444	0.175555556		
+	4	0.145348837	0.13372093		
+shHERVH + diluent	1	0.348242812	0.424920128	0.337288124	0.376902855
+	2	0.239482201	0.284789644		
+	3	0.452887538	0.489361702		
+	4	0.308539945	0.308539945		
+shscr + capsaicin	1	0.16080402	0.060301508	0.268608115	0.088761784
+	2	0.169354839	0.133064516		
+	3	0.269387755	0.06122449		
+	4	0.474885845	0.100456621		
+shHERVH + capsaicin	1	0.130841121	0.052959502	0.34862578	0.098499194
+	2	0.367213115	0.085245902		
+	3	0.410493827	0.095679012		
+	4	0.485955056	0.16011236		
+samples mean				0.277601349	0.183060016
+shscr + diluent	normilized to sample’s mean value			0.561536813	0.918148249
+shHERVH + diluent				1.215008952	2.058903206
+shscr + capsaicin				0.967603781	0.484878049
+shHERVH + capsaicin				1.255850454	0.538070496
+
+
+################## Batch 3 , Capsaicin, for H2AX-gamma
+count normilized to dapi			
+	technical replicates	H2AX	mean H2AX
+shscr + diluent	1	0.530769231	0.579817605
+	2	0.628865979	
+shHERVH + diluent	1	3.137724551	2.778946309
+	2	2.420168067	
+shscr + capsaicin	1	0.481203008	0.615601504
+	2	0.75	
+shHERVH + capsaicin	1	0.980582524	0.980582524
+samples mean			1.238736986
+shscr + diluent	normilized to sample’s mean value		0.468071602
+shHERVH + diluent			2.243370741
+shscr + capsaicin			0.496959008
+shHERVH + capsaicin			0.791598649
+####### data pooled together
+	H2AX gamma	cleaved caspase 3	SD H2AX gamma	SD cleaved caspase 3	SEM H2AX gamma	SEM cleaved caspase 3
+shscr + diluent	0.332052024	0.100624512	0.220849832	0.09539114	0.12750771	0.067451722
+shHERVH + diluent	1.222217517	0.319386307	1.352371805	0.081340681	0.780792225	0.057516547
+shscr + capsaicin	0.611763785	0.207105727	0.341252996	0.16736361	0.197022509	0.118343943
+shHERVH + capsaicin	0.588204557	0.163363551	0.342568279	0.091732053	0.197781888	0.064864357
+
+
+######## Normalized data, 
+	H2AX gamma	cleaved caspase 3	SD H2AX gamma	SD cleaved caspase 3	SEM H2AX gamma	SEM cleaved caspase 3
+shscr + diluent	0.501244001	0.537245453	0.052302715	0.5386779	0.030196986	0.380902796
+shHERVH + diluent	1.486780707	1.646544921	0.663828717	0.583162679	0.383261688	0.412358285
+shscr + capsaicin	1.065293216	1.009357729	0.622950435	0.741726276	0.359660601	0.52447968
+shHERVH + capsaicin	0.946682077	0.806851897	0.267748135	0.380114303	0.154584458	0.268781402
